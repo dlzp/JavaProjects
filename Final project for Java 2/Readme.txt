@@ -1,0 +1,2 @@
+This was a project for my intro to java level 2 class. The purpose of this project was to create a begal shop point of sale unit that looked and 
+funtioned excatly like the output that was given to you with only using a text based software. I used Edit plus for this project.
