@@ -1,11 +1,24 @@
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.*;
-import java.awt.Component.*;
-import java.text.*;
-import java.io.*;
-import java.util.*;
-import java.math.*;
+package POS_System;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.math.BigDecimal;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -52,10 +65,8 @@ public class POSSystem extends JFrame implements ActionListener
 	
 	//open Button
 	private static JButton open = new JButton("Open");
-
-	// variables for gathering information	
-	private static String amount, name, type, imported, sPrice;
-	private static BigDecimal taxedPrice;
+	
+	private Receipt receipt;
 	
 	/**
 	 *public constructor used to instantiate the GUI class
@@ -94,10 +105,17 @@ public class POSSystem extends JFrame implements ActionListener
 		quit.addActionListener(this);
 		open.addActionListener(this);
 
-		filePicker();
+		start();
 		
 	}
-	
+	/**
+	 * Method start starts the activity
+	 */
+	private void start()
+	{
+		filePicker();
+		display();
+	}
 	/**
 	 *Method menu creates menu bar
 	 */
@@ -116,9 +134,6 @@ public class POSSystem extends JFrame implements ActionListener
 		panelIn.setBorder(BorderFactory.createTitledBorder("Chose Your Input Test Case"));
 		panelIn.setLayout(new FlowLayout(FlowLayout.LEFT));
 		panelIn.add(open);
-		
-		
-
 	}
 	
 	/**
@@ -138,7 +153,7 @@ public class POSSystem extends JFrame implements ActionListener
 	/**
 	 * Method filePicker opens a fileChooser GUI to select the text file 
 	 */
-	private static void filePicker()
+	private  void filePicker()
 	{
 		JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
 		File file;
@@ -152,83 +167,24 @@ public class POSSystem extends JFrame implements ActionListener
 		if (status == JFileChooser.APPROVE_OPTION) 
 		{
 			 file = chooser.getSelectedFile();
-			 getInfo(file);
+			 receipt = new Receipt(file);
+			 
 		}
 		 else
         {
             JOptionPane.showMessageDialog(null, "Open File dialog canceled");
         }
 	}
-	/**
-	 * Method getInfo retrieves all the values from the text file
-	 * @param string value for the name of the file
-	 */
-	private static void getInfo(File f) 
-	{
 	
-		try
-		{
-			FileReader file = new FileReader(f);
-			
-			BufferedReader br = new BufferedReader(file);
-
-			String line;
-						
-			while ((line = br.readLine()) !=null)
-			{
-				StringTokenizer token = new StringTokenizer(line, ":");
-				amount = token.nextToken();
-				name = token.nextToken();
-				type = token.nextToken().toString();
-				imported = token.nextToken();
-				sPrice = token.nextToken();
-				
-				// calls the SalesTax class and calculations method
-				taxedPrice = SalesTax.calculations(amount,sPrice,type,imported);
-				display(amount, name, taxedPrice);
-				
-			}
-			
-			br.close();
-			
-		}
-		catch (IOException e)
-		{
-			System.out.println("IO Exception " + e);
-		}
-		catch(Exception e)
-		{
-			System.out.println("Execption " +e );
-		}
 	
-		// retrieves the tax total and the total from the salesTax class
-		BigDecimal taxTotal = SalesTax.getTaxTotal();
-		BigDecimal total = SalesTax.getTotal();
-		
-		display(taxTotal,total);
-	
-	}
 	/**
 	 * Method display sets the text of the jTextArea
-	 * @param String value for the amount of the product
-	 * @param String value for the name of the product
-	 * @param BigDecimal value for the price after tax of the product
 	 */
-	private static void display(String amount, String name, BigDecimal price)
+	private void display()
 	{
-		purchases.append(amount+" "+ name+": $"+ price.toString()+"\n");
+		purchases.append(receipt.toString());
 	}
 	
-	/**
-	 * Method display is a overloaded method it appends the text of the jTextArea to input the tax total and total
-	 * @param BigDecimal value for the total amount of tax to pay
-	 * @param BigDecimal value for the total amount to pay
-	 */
-	private static void display(BigDecimal tax, BigDecimal fPrice)
-	{
-		purchases.append("\n"+lTax+": $"+tax+ "\n"+lTotal+": $"+ fPrice);
-	}
-
 	/**
 	 * Method actionPerformed is abstract method overwritten gives the actions to the menu bar
 	 * @param ActionEvent used to identify the source of the event
@@ -242,7 +198,7 @@ public class POSSystem extends JFrame implements ActionListener
 		if(open==a.getSource())
 		{
 			reset();
-			filePicker();
+			start();
 		}
 	}
 	/**
@@ -251,8 +207,6 @@ public class POSSystem extends JFrame implements ActionListener
 	private static void reset()
 	{
 		purchases.setText("");
-		SalesTax.setTaxTotal(resetTotals);
-		SalesTax.setTotal(resetTotals);
 	}
 	
 

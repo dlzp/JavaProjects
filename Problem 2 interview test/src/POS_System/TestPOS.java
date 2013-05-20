@@ -1,3 +1,5 @@
+package POS_System;
+
 /**
  * ThoughtWorks Test Code Problem Two: Sales Tax
  * TestPOS.java
