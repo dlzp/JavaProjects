@@ -49,19 +49,20 @@ public class Puzzle extends JFrame implements ActionListener
 		createPieces();
 		
 		frameDefaults();
-		//scramble();
+		scramble();
 		
 		
 				
 		}
-	private void scramble()
-	{
-		Random randomNum = new Random();
-		for (int i = 0; i < 11; i++) 
+		//scrambles the puzzle pieces 
+		private void scramble()
 		{
-			button = (JButton)centerPanel.getComponent(i);
-			centerPanel.add(button,randomNum.nextInt(10));
-		}
+			Random randomNum = new Random();
+			for (int i = 0; i < 11; i++) 
+			{
+				button = (JButton)centerPanel.getComponent(i);
+				centerPanel.add(button,randomNum.nextInt(10));
+			}
 		
 	}
 	
@@ -74,6 +75,7 @@ public class Puzzle extends JFrame implements ActionListener
 		height = picture.getIconHeight();
 	}
 
+	// the main window defaults
 	private void frameDefaults()
 	{
 		setSize(width, height);
@@ -83,6 +85,7 @@ public class Puzzle extends JFrame implements ActionListener
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
@@ -133,6 +136,7 @@ public class Puzzle extends JFrame implements ActionListener
 		
 		
 	}
+	// swaps the puzzle piece with the blank space
 	private void swap(int buttonIndex, int labelIndex, JButton button )
 	{
 		centerPanel.remove(buttonIndex);
